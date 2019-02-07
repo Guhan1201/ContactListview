@@ -2,6 +2,7 @@ package com.example.contactlistview.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     Context context;
     String letter;
     ColorGenerator generator = ColorGenerator.MATERIAL;
+    int selectedPosition=-1;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -67,7 +69,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         ContactListDetail contactListDetail = contactListDetailList.get(position);
         holder.name.setText(contactListDetail.getName());
         Log.e("onBindViewHolder", contactListDetail.getName());
@@ -77,6 +79,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         TextDrawable drawable = TextDrawable.builder()
                 .buildRound(letter, color);
         holder.letter.setImageDrawable(drawable);
+
+
 
     }
 

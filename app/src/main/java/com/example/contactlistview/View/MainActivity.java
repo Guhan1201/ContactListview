@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
