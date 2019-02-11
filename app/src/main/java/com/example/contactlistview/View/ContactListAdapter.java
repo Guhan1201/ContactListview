@@ -1,7 +1,6 @@
 package com.example.contactlistview.View;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,10 +14,12 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.contactlistview.ContactList;
 import com.example.contactlistview.Model.ContactListDetail;
+import com.example.contactlistview.Model.UIcallback;
 import com.example.contactlistview.R;
 
 import java.util.List;
 
+//ContactDetailNavigator - create interface
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.MyViewHolder> {
 
 
@@ -26,6 +27,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     Context context;
     String letter;
     ColorGenerator generator = ColorGenerator.MATERIAL;
+    private UIcallback mainActivityCallback;
+    int selectedPosition=-1;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -36,7 +39,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             super(itemView);
             letter = (ImageView) itemView.findViewById(R.id.gmailitem_letter);
             name = (TextView) itemView.findViewById(R.id.name);
-            itemView.setOnClickListener(new View.OnClickListener() {
+           /* itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
@@ -47,27 +50,37 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     intent.putExtra("object", contactListDetail);
                     context.startActivity(intent);
                 }
-            });
+            });*/
 
         }
     }
 
 
-    public ContactListAdapter(@NonNull List<ContactListDetail> contactListDetailList) {
+    public ContactListAdapter(@NonNull List<ContactListDetail> contactListDetailList, UIcallback listener) {
         this.contactListDetailList = contactListDetailList;
         this.context = ContactList.getAppContext();
+        this.mainActivityCallback = listener;
     }
 
 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.temp_file, viewGroup, false);
-        Log.e("integer", Integer.toString(i));
-        return new MyViewHolder(itemView);
+        final MyViewHolder holder = new MyViewHolder(itemView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("click testing", "position = " + holder.getAdapterPosition());
+                mainActivityCallback.onClick(holder.getAdapterPosition());
+            }
+        });
+        return holder;
+      //  return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         ContactListDetail contactListDetail = contactListDetailList.get(position);
         holder.name.setText(contactListDetail.getName());
         Log.e("onBindViewHolder", contactListDetail.getName());
@@ -77,6 +90,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         TextDrawable drawable = TextDrawable.builder()
                 .buildRound(letter, color);
         holder.letter.setImageDrawable(drawable);
+
+
 
     }
 

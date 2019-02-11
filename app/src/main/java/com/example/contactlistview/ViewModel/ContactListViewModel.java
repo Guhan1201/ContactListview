@@ -11,7 +11,7 @@ import com.example.contactlistview.Model.ViewModelcallback;
 import java.util.ArrayList;
 import java.util.List;
 
-//Contact
+//ContactViewModel
 public class ContactListViewModel {
     String id;
 

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 //name change
-// name ContactListController
+// name ContactsController
 
 public class ContactListController {
 

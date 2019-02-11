@@ -3,6 +3,7 @@ package com.example.contactlistview;
 import android.app.Application;
 import android.content.Context;
 
+//ContactsApp
 public class ContactList extends Application {
 
     private static Context context;

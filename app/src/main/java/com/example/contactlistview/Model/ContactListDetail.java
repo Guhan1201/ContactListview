@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.annotations.SerializedName;
 
+//ContactModel. Just one model is enough
 public class ContactListDetail implements Parcelable {
 
     private int color;

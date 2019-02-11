@@ -20,6 +20,7 @@ import com.example.contactlistview.ViewModel.ContactListViewModel;
 
 import java.util.List;
 
+//ContactDetailActivity
 public class ProfileActivity extends AppCompatActivity {
 
     @Override
@@ -84,6 +85,11 @@ public class ProfileActivity extends AppCompatActivity {
                 errormessage.setVisibility(View.VISIBLE);
                 errormessage.setText("No internet connection");
                 progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onClick(int position) {
+
             }
         });
     }
