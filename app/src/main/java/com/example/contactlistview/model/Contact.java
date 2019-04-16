@@ -10,7 +10,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.annotations.SerializedName;
 
 //ContactModel. Just one model is enough
-public class ContactDetail implements Parcelable {
+public class Contact implements Parcelable {
 
     private int color;
     ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -117,7 +117,7 @@ public class ContactDetail implements Parcelable {
     public int describeContents() {
         return 0;
     }
-    public ContactDetail(Parcel in){
+    public Contact(Parcel in){
         id =  in.readString();
         address =  in.readString();
         CompanyID =  in.readString();
@@ -147,13 +147,13 @@ public class ContactDetail implements Parcelable {
 
 
 
-    public static final Parcelable.Creator<ContactDetail> CREATOR = new Parcelable.Creator<ContactDetail>(){
-        public ContactDetail createFromParcel(Parcel in) {
-            return new ContactDetail(in);
+    public static final Parcelable.Creator<Contact> CREATOR = new Parcelable.Creator<Contact>(){
+        public Contact createFromParcel(Parcel in) {
+            return new Contact(in);
         }
 
-        public ContactDetail[] newArray(int size) {
-            return new ContactDetail[size];
+        public Contact[] newArray(int size) {
+            return new Contact[size];
         }
     };
     @BindingAdapter({"android:src"})

@@ -1,4 +1,4 @@
-package com.example.contactlistview.Model;
+package com.example.contactlistview.model;
 
 public interface Volleycallback {
     void onSuccess(String result);

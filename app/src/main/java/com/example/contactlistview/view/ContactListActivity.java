@@ -1,7 +1,7 @@
 package com.example.contactlistview.view;
-
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
@@ -10,91 +10,86 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import com.example.contactlistview.R;
-import com.example.contactlistview.ViewModel.ContactViewModel;
+import com.example.contactlistview.ViewModel.ContactListViewModel;
 import com.example.contactlistview.databinding.ActivityMainBinding;
-import com.example.contactlistview.model.ContactDetail;
-
+import com.example.contactlistview.events.ContactDetailEvent;
+import com.example.contactlistview.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
+public class ContactListActivity extends AppCompatActivity {
 
-//Android studio suggested changes
-//ContactListActivity - CHANGE NAME PLS
-
-public class ListActivity extends AppCompatActivity {
-
-
-    //Please initialise vars only when they are going to be used. DONE
-    //TODO ALL variables should be declared final - See final variables meaning in web.
-    RecyclerView.LayoutManager mLayoutManager;
-    private ContactViewModel model;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ContactListViewModel viewModel;
     private ObservableBoolean progress;
-    private ObservableBoolean error;
-    ContactListAdapter adapter;
+    private ObservableBoolean errorMessage;
+    private ContactListAdapter adapter;
 
-    //TODO Rename it to "binding". Unless there is one more binding variable. names can be short and meaningful.
-    ActivityMainBinding mainBinding;
-    //TODO Rename ContactDetail to Contact
-    List<ContactDetail> contactlist;
+    //TODO Rename it to "binding". Unless there is one more binding variable in the same class. names can be short and meaningful.  DONE
+    //private
+   private ActivityMainBinding binding;
+   private List<Contact> contactlist;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        ContactViewModel.ViewModelFactory factory = new ContactViewModel.ViewModelFactory("id");
-        //TODO Pls change variable name to viewmodel.
-        model = ViewModelProviders.of(this, factory).get(ContactViewModel.class);
-
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        viewModel = ViewModelProviders.of(this).get(ContactListViewModel.class);
         mLayoutManager = new LinearLayoutManager(this);
+        errorMessage = new ObservableBoolean();
         progress = new ObservableBoolean(true);
-        mainBinding.setProgress(progress);
-        //TODO Default value is false. use empty constructor
-        error = new ObservableBoolean(false);
-        mainBinding.setError(error);
-        //All visiblilty moves out of this class. Data bound.      DONE
-
         contactlist = new ArrayList<>();
+        adapter = new ContactListAdapter(contactlist, viewModel);
 
-        adapter = new ContactListAdapter(contactlist, model);
-        mainBinding.recylerview.setAdapter(adapter);
-        //function inside adapter, which receives a list,     DONE
-        //function definition, list.addAll(the list u get in function parameter)    DONE
+        binding.setProgress(progress);
+        binding.setError(errorMessage);
+
+        binding.recylerview.setAdapter(adapter);
+        binding.recylerview.setLayoutManager(mLayoutManager);
+
         populateRecylerView();
+        donavigation();
 
-
-        mainBinding.swiperefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.swiperefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 populateRecylerView();
-                mainBinding.swiperefreshlayout.setRefreshing(false);
+                binding.swiperefreshlayout.setRefreshing(false);
+            }
+        });
+    }
+
+
+    private void donavigation() {
+        //TODO Live data name change please
+
+        viewModel.contactDetailEventMutableLiveData.observe(this, new Observer<ContactDetailEvent>() {
+            @Override
+            public void onChanged(@Nullable ContactDetailEvent contactDetailEvent) {
+                Intent intent = new Intent(ContactListActivity.this,ContactDetailActivity.class);
+                intent.putExtra("id", contactDetailEvent.getId());
+                startActivity(intent);
             }
         });
     }
 
     public void populateRecylerView() {
 
-        //TODO Maintiain a seperate livedata for error in VM. Observer that LD in UI, and show snackbar or whatever.
-        //Error handling should not be base on contactlist LD.
-        model.contactListLiveData.observe(this, new Observer<List<ContactDetail>>() {
+        viewModel.contactListLiveData.observe(this, new Observer<List<Contact>>() {
             @Override
-            public void onChanged(@Nullable List<ContactDetail> contactListDetail) {
-                //  contactListAdapter.addItemsToList(contactListDetails);   DONE
-                //notifydatasetchanged.    DONE
-                if (contactListDetail == null) {
-                    mainBinding.errortext.setText("No internet connection");
-                    error.set(true);
-                } else {
-                    contactlist = contactListDetail;
-                    //TODO Remove setlayoutmanager and set it in oncreate.
-                    mainBinding.recylerview.setLayoutManager(mLayoutManager);
-                    //TODO. Change name to addItemsToList
-                    adapter.addItem(contactlist);
-                    adapter.notifyDataSetChanged();
-                }
-                progress.set(false);
+            public void onChanged(@Nullable List<Contact> contactList) {
+                adapter.addItemToList(contactList);
+                adapter.notifyDataSetChanged();
             }
-
         });
+        viewModel.errorLiveData.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                binding.errortext.setText("No internet connection");
+                errorMessage.set(true);
+            }
+        });
+        progress.set(false);
     }
 }

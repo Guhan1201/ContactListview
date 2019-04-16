@@ -2,9 +2,7 @@ package com.example.contactlistview.model;
 
 import java.util.List;
 
-public interface ViewModelcallback {
-    void onSuccess(List <Contact> contactListDetail);
+public interface ContactListVMcallback {
+    void onSuccess(List<Contact> contactList);
     void errorResponse(String error);
-
-    void onSuccessObject(ContactDetail contactDetail);
 }
