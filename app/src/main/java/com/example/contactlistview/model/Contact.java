@@ -1,13 +1,16 @@
-package com.example.contactlistview.Model;
+package com.example.contactlistview.model;
 
+import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.annotations.SerializedName;
 
 //ContactModel. Just one model is enough
-public class ContactListDetail implements Parcelable {
+public class ContactDetail implements Parcelable {
 
     private int color;
     ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -114,7 +117,7 @@ public class ContactListDetail implements Parcelable {
     public int describeContents() {
         return 0;
     }
-    public ContactListDetail(Parcel in){
+    public ContactDetail(Parcel in){
         id =  in.readString();
         address =  in.readString();
         CompanyID =  in.readString();
@@ -144,13 +147,22 @@ public class ContactListDetail implements Parcelable {
 
 
 
-    public static final Parcelable.Creator<ContactListDetail> CREATOR = new Parcelable.Creator<ContactListDetail>(){
-        public ContactListDetail createFromParcel(Parcel in) {
-            return new ContactListDetail(in);
+    public static final Parcelable.Creator<ContactDetail> CREATOR = new Parcelable.Creator<ContactDetail>(){
+        public ContactDetail createFromParcel(Parcel in) {
+            return new ContactDetail(in);
         }
 
-        public ContactListDetail[] newArray(int size) {
-            return new ContactListDetail[size];
+        public ContactDetail[] newArray(int size) {
+            return new ContactDetail[size];
         }
     };
+    @BindingAdapter({"android:src"})
+    public static void setImageDrawable(ImageView imageView,String name){
+        String letter = String.valueOf(name.charAt(0));
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        int color = generator.getRandomColor();
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(letter, color);
+        imageView.setImageDrawable(drawable);
+    }
 }
